@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Mistral } from '@mistralai/mistralai';
@@ -12,27 +13,26 @@ const WeatherComponent = () => {
   const [error, setError] = useState(null);
   const [poetry, setPoetry] = useState(null);
 
-  // const apiKey = process.env.REACT_APP_MISTRAL_API_KEY;
-  const apiKey = 'XSrjDAtlsXEX8U2Fgc8py85bgRths7pa';
-  // console.log('API Key:', apiKey); // Log the API key for debugging
+
+  const apiKey = import.meta.env.VITE_AI_API_KEY;
+  // console.log('API Key:', apiKey); 
 
   if (!apiKey) {
     console.error('API key is not set');
   }
- // Ensure this is set in your .env file
-  const client = new Mistral({ apiKey });
 
-  // Fetch weather based on user input city
+  const client = new Mistral({ apiKey });
   const fetchWeather = async (city) => {
     setLoading(true);
     setError(null);
     try {
-      const API_KEY = '6e3bbf476831d0197a811f4392171fb9';
+  
+      const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
       const response = await axios.get(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
       );
       setWeatherData(response.data);
-      await generatePoetry(response.data); // Generate AI content for the fetched weather
+      await generatePoetry(response.data); 
       setLoading(false);
     } catch (err) {
       setError('Failed to fetch weather data');
@@ -69,33 +69,7 @@ const WeatherComponent = () => {
   };
 
   return (
-  //   <div className='container'>
-  //     <h1>Search for Weather</h1>
-  //     <form onSubmit={handleSearch}>
-        
-  //       <input
-  //         type="text"
-  //         placeholder="Enter city name"
-  //         value={city}
-  //         onChange={(e) => setCity(e.target.value)}
-  //       />
-  //       <button type="submit">Search</button>
-  //     </form>
 
-  //     {loading && <div>Loading...</div>}
-  //     {error && <div>{error}</div>}
-
-  //     {weatherData && (
-  //       <div>
-  //         <h2>Weather in {weatherData.name}</h2>
-  //         <p id='temp'>Temperature: {weatherData.main.temp}°C</p>
-  //         <p>Weather: {weatherData.weather[0].description}</p>
-  //         <h3>Tasks and what it feels </h3>
-  //         <p id='poem'>{poetry}</p>
-  //       </div>
-  //     )}
-  //   </div>
-  // );
   <div>
     <div class="container flex flex-row justify-center items-center">
       <div class="container m-3 p-3 basis-1/2">
@@ -176,10 +150,25 @@ const WeatherComponent = () => {
   )}
 
 {loading && (
-    <div className="text-center py-8">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue mx-auto"></div>
-      <p className="text-black mt-4">Loading weather data...</p>
+    <div className="fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-50">
+    <div className="text-center py-8 bg-white/10 p-6 rounded-lg shadow-lg">
+      {/* <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue mx-auto"></div> */}
+      {/* <div className="animate-pulse rounded-full h-12 w-12 bg-orange-500 mx-auto"></div> */}
+      <div className="flex justify-center items-center">
+        <svg className="w-24 h-24 animate-pulse" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+            <circle cx="16" cy="40" r="12" fill="white" />
+            <circle cx="32" cy="32" r="16" fill="Orange" />
+            <circle cx="48" cy="40" r="12" fill="white" />
+            <circle cx="34" cy="40" r="12" fill="white" />
+            <circle cx="32" cy="40" r="14" fill="white" />
+            <circle cx="30" cy="40" r="14" fill="white" />
+            <circle cx="28" cy="40" r="14" fill="white" />
+        </svg>
+</div>
+
+      <p className="text-black mt-4 animate-pulse">Getting weather data...</p>
     </div>
+  </div>
   )}
 
   {error && (
@@ -188,85 +177,7 @@ const WeatherComponent = () => {
     </div>
   )}
 </div>
-//   <div className="container">
-//   <form onSubmit={handleSearch}>
-//     <div className="flex gap-1">
-//       <input
-//         type="text"
-//         placeholder="Enter city name"
-//         value={city}
-//         onChange={(e) => setCity(e.target.value)}
-//         className="flex-1 rounded-lg bg-white/10 border border-white/20 text-black placeholder-black/60 focus:outline-none focus:ring-2 focus:ring-white/40 transition"
-//       />
-//       <button
-//         type="submit"
-//         className=" bg-white/20 hover:bg-white/30 text-black rounded-lg transition duration-200 focus:outline-none focus:ring-2 focus:ring-white/40"
-//       >
-//         Search
-//       </button>
-//     </div>
-//   </form>
 
-
-
-//   {weatherData && (
-//     <div className="">
-//       <div className="bg-white/10 rounded-lg p-6">
-//         <h2 className="text-2xl font-semibold text-black mb-4">
-//           Weather in {weatherData.name}
-//         </h2>
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-//           <div className="bg-white/10 p-4 rounded-lg">
-//             <p className="text-4xl font-bold text-black">
-//               {weatherData.main.temp}°C
-//             </p>
-//             <p className="text-black/80 capitalize">
-//               {weatherData.weather[0].description}
-//             </p>
-//           </div>
-//           <div className="bg-white/10 p-4 rounded-lg">
-//             <div className="flex items-center justify-between">
-//               <div>
-//                 <p className="text-black/80">Humidity</p>
-//                 <p className="text-xl font-semibold text-black">
-//                   {weatherData.main.humidity}%
-//                 </p>
-//               </div>
-//               <div>
-//                 <p className="text-black/80">Wind</p>
-//                 <p className="text-xl font-semibold text-black">
-//                   {weatherData.wind.speed} m/s
-//                 </p>
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       <div className="bg-white/10 rounded-lg p-6">
-//         <h3 className="text-xl font-semibold text-black mb-4">
-//           Tasks and what it feels like
-//         </h3>
-//         <p className="text-black/90 leading-relaxed whitespace-pre-line">
-//           {poetry}
-//         </p>
-//       </div>
-//     </div>
-//   )}
-
-// {loading && (
-//     <div className="text-center py-8">
-//       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue mx-auto"></div>
-//       <p className="text-black mt-4">Loading weather data...</p>
-//     </div>
-//   )}
-
-//   {error && (
-//     <div className="bg-red-500/20 border border-red-500/50 text-red p-4 rounded-lg">
-//       {error}
-//     </div>
-//   )}
-// </div>
 );
 };
 
